@@ -14,7 +14,7 @@ public class CombatRunnerTests {
     public async Task RunAsyncExitsWhenCombatEndSignaled() {
         var player = new Player("Hero", 10, new Deck(new[] { new Card("Strike", 6) }));
         var enemies = new List<Enemy> { new Enemy("Slime", 5, 1, TimeSpan.FromMilliseconds(80)) };
-        var ctx = new CombatContext(player, enemies);
+        var ctx = new CombatContext(player, enemies, 0);
         var inv = new Inventory();
         var run = CombatRunner.RunAsync(ctx, inv);
 

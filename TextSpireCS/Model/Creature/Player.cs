@@ -10,6 +10,8 @@ public sealed class Player {
     public int MaxHp { get; }
     public Deck Deck { get; }
 
+    public int Armor { get; private set; }
+
     public Player(string name, int maxHp, Deck deck) {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Name cannot be null or blank.", nameof(name));
@@ -24,9 +26,25 @@ public sealed class Player {
 
     public bool IsDead => Hp <= 0;
 
+    public void AddArmor(int amount) {
+        if (amount <= 0) return;
+        Armor += amount;
+    }
+
+    public void ResetArmor() => Armor = 0;
+
     public void TakeDamage(int dmg) {
-        if (dmg < 0) dmg = 0;
-        Hp = Math.Max(0, Hp - dmg);
+        dmg = Math.Max(0, dmg);
+
+        if (Armor > 0) {
+            int absorbed = Math.Min(Armor, dmg);
+            Armor -= absorbed;
+            dmg -= absorbed;
+        }
+
+        if (dmg > 0) {
+            Hp = Math.Max(0, Hp - dmg);
+        }
     }
 
     public void Heal(int amount) {

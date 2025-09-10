@@ -22,11 +22,17 @@ public sealed class CombatContext : IDisposable
     public Player Player { get; }
     public IReadOnlyList<Enemy> Enemies { get; }
 
+    public int DefenseBonus { get; }
+
     // Null checks for quick fails. Immutable enemies list since this class doesn't modify enemies.
-    public CombatContext(Player player, IReadOnlyList<Enemy> enemies)
+    public CombatContext(Player player, IReadOnlyList<Enemy> enemies, int defenseBonus)
     {
         Player = player ?? throw new ArgumentNullException(nameof(player));
         Enemies = (enemies ?? throw new ArgumentNullException(nameof(enemies))) is List<Enemy> list ? list.AsReadOnly() : new List<Enemy>(enemies).AsReadOnly();
+        DefenseBonus = defenseBonus;
+
+        // Aarmor is temporary per floor/combat
+        Player.ResetArmor();
     }
 
     // Token passed to delays/timers/loops. When Cancel() happens, they stop.

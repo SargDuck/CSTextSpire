@@ -124,6 +124,8 @@ public static class CombatRunner {
         Card? played = null;
         Enemy? target = null;
         int targetHpAfter = 0;
+        bool wasDefend = false;
+        int armorGained = 0;
 
         lock (ctx.Lock) {
             if (ctx.Enemies.All(e => e.Hp <= 0)) {
@@ -138,30 +140,42 @@ public static class CombatRunner {
                 return;
             }
 
-            if (idx1Based < 1 || idx1Based > ctx.Enemies.Count) {
-                Console.WriteLine($"Choose enemy 1-{ctx.Enemies.Count}");
-                return;
+            if (string.Equals(played.Name, "Defend", StringComparison.OrdinalIgnoreCase)) {
+                wasDefend = true;
+                armorGained = 6 + ctx.DefenseBonus;
+                ctx.Player.AddArmor(armorGained);
+                ctx.Player.Deck.Discard(played);
+            } else {
+
+                if (idx1Based < 1 || idx1Based > ctx.Enemies.Count) {
+                    Console.WriteLine($"Choose enemy 1-{ctx.Enemies.Count}");
+                    return;
+                }
+                target = ctx.Enemies[idx1Based - 1];
+                if (target.Hp <= 0) {
+                    Console.WriteLine("Already down!");
+                    return;
+                }
+
+                // effect
+                target.TakeDamage(played.Dmg);
+                targetHpAfter = target.Hp;
+
+                // discard after effect
+                ctx.Player.Deck.Discard(played);
+
+                // end if that was the last living enemy
+                if (target.Hp <= 0 && ctx.Enemies.All(e => e.Hp <= 0))
+                    ctx.SignalCombatEnd();
             }
-            target = ctx.Enemies[idx1Based - 1];
-            if (target.Hp <= 0) {
-                Console.WriteLine("Already down!");
-                return;
-            }
-
-            // effect
-            target.TakeDamage(played.Dmg);
-            targetHpAfter = target.Hp;
-
-            // discard after effect
-            ctx.Player.Deck.Discard(played);
-
-            // end if that was the last living enemy
-            if (target.Hp <= 0 && ctx.Enemies.All(e => e.Hp <= 0))
-                ctx.SignalCombatEnd();
         }
 
         // print outside lock to minimize time spent inside critical section
-        Console.WriteLine($"You played {played!.Name}! {target!.Name} HP: {targetHpAfter}");
+        if (wasDefend) {
+            Console.WriteLine($"You played Defend! +{armorGained} Armor (Armor: {ctx.Player.Armor})");
+        } else {
+            Console.WriteLine($"You played {played!.Name}! {target!.Name} HP: {targetHpAfter}");
+        }
     }
 
 

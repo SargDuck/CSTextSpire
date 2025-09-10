@@ -7,7 +7,7 @@ using TextSpireCS.Model.Item;
 namespace TextSpireCS.UI {
 
     // Provideds a snapshot of the player's current state:
-    //  Player HP ( Hp / MaxHp ).
+    //  Player Stats ( Hp / MaxHp ) ( Armor ).
     //  Deck size ( Deck.Size ).
     //  Potions count.
     //  Weapons count.
@@ -20,7 +20,7 @@ namespace TextSpireCS.UI {
 
             Player p = ctx.Player;
 
-            Console.WriteLine($"HP {p.Hp} / {p.MaxHp}");
+            Console.WriteLine($"HP {p.Hp} / {p.MaxHp}   Armor {p.Armor}");
 
             int deckSize = p.Deck.Size;
             Console.WriteLine($"Deck size : {deckSize}");

@@ -13,7 +13,7 @@ public class EnemyTests {
     public async Task EnemyDealsDamageOnIntervalAndStopsOnEnd() {
         var player = new Player("Hero", 50, new Deck(Array.Empty<Card>()));
         var enemy = new Enemy("Slime", hp: 5, damage: 3, interval: TimeSpan.FromMilliseconds(60));
-        var ctx = new CombatContext(player, new List<Enemy> { enemy });
+        var ctx = new CombatContext(player, new List<Enemy> { enemy }, 0);
 
         var task = enemy.RunAsync(ctx);
 

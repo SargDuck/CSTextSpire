@@ -75,7 +75,7 @@ public class Program
             {
                 _floor++;
                 var enemies = EnemyFactory.BuildScaledFromBase(Math.Max(1, _floor), _slimeCount,_slimeHp,_slimeDmg,TimeSpan.FromSeconds(_slimeDelay),Rng.Shared);
-                using (var ctx = new CombatContext(player, enemies)) {
+                using (var ctx = new CombatContext(player, enemies, _defenseBonus)) {
                     Console.WriteLine($"Ready for floor {_floor}?");
                     Console.ReadLine();
                     
@@ -137,7 +137,7 @@ public class Program
             deck         = new Deck(sg.deck);
             inventory.GetPotions().AddRange(sg.potions);
             inventory.GetWeapons().AddRange(sg.weapons);
-            Console.WriteLine($"Save loaded – floor {_floor}");
+            Console.WriteLine($"Save loaded - floor {_floor}");
             return true;
         }
         catch (Exception e)
@@ -258,7 +258,7 @@ public class Program
     }
 
     // Unused since .ToString() added to Room.cs
-    //private static string pretty(Room r) =>
+    //private static string prettyay(Room r) =>
     //    r.Type switch
     //    {
     //        RoomType.REST => "Rest",

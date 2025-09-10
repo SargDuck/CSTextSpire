@@ -16,7 +16,7 @@ public class StatusPrinterTests {
         var deck = new Deck(new[] { new Card("Strike", 6), new Card("Defend", 0) });
         var player = new Player("Hero", 30, deck);
         var enemies = new List<Enemy>();
-        var ctx = new CombatContext(player, enemies);
+        var ctx = new CombatContext(player, enemies, 0);
 
         var inv = new Inventory();
         inv.AddPotion(new Potion("Heal", 10));
@@ -45,7 +45,7 @@ public class StatusPrinterTests {
         var deck = new Deck(new[] { new Card("Strike", 6), new Card("Defend", 0) });
         var player = new Player("Hero", 20, deck);
         var enemies = new List<Enemy>();
-        var ctx = new CombatContext(player, enemies);
+        var ctx = new CombatContext(player, enemies, 0);
         var inv = new Inventory();
         inv.AddPotion(new Potion("Heal", 5));
         inv.AddWeapon(new Weapon("Sword", 2));
