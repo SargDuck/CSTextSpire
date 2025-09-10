@@ -50,7 +50,6 @@ public class Program
             case "2":
                 if (!loadSave())
                 {
-                    Console.WriteLine("No save found.");
                     return;
                 }
                 Console.WriteLine("Load successful.");
