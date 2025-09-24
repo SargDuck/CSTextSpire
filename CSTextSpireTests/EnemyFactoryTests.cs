@@ -51,4 +51,15 @@ public class EnemyFactoryScalingTests {
         Assert.Equal(m1.Select(e => (e.Name, e.Hp, e.Damage, e.Interval)).ToArray(),
                      m2.Select(e => (e.Name, e.Hp, e.Damage, e.Interval)).ToArray());
     }
+
+    [Fact]
+    public void BuildRosterScaled_ProducesDifferentEnemyNames() {
+        var mobs = EnemyFactory.BuildRosterScaled(3, count: 10, baseHp: 10, baseDmg: 3,
+            interval: TimeSpan.FromMilliseconds(800), rng: new Random(42));
+
+        Assert.Contains(mobs, e => e.Name.StartsWith("Slime"));
+        Assert.Contains(mobs, e => e.Name.StartsWith("Goblin"));
+        Assert.Contains(mobs, e => e.Name.StartsWith("Bat"));
+        Assert.Contains(mobs, e => e.Name.StartsWith("Bear"));
+    }
 }

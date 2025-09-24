@@ -5,7 +5,11 @@ public enum RoomType {
     REST,
     OFFENSE,
     DEFENSE,
-    MONSTER
+    MONSTER,
+    SHOP,
+    EVENT,
+    TREASURE,
+    MYSTERY
 }
 
 // Wrapper object around RoomType.
@@ -20,6 +24,10 @@ public sealed class Room {
         RoomType.OFFENSE => "Offense Room",
         RoomType.DEFENSE => "Defense Room",
         RoomType.MONSTER => "Monster Encounter",
+        RoomType.SHOP    => "Shop",
+        RoomType.EVENT   => "Mysterious Event",
+        RoomType.TREASURE=> "Treaure Room",
+        RoomType.MYSTERY => "Mysterious Detour",
         _ => Type.ToString()
     };
 }

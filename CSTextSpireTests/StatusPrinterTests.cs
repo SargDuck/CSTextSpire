@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using TextSpireCS.Engine;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Creature;
 using TextSpireCS.Model.Item;
 using TextSpireCS.UI;

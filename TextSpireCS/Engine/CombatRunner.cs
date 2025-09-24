@@ -1,5 +1,5 @@
 using System.Text;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Creature;
 using TextSpireCS.Model.Item;
 using TextSpireCS.UI;
@@ -111,6 +111,7 @@ public static class CombatRunner {
             case "status": StatusPrinter.Print(ctx, inv); break;
             case "quit": ctx.SignalCombatEnd(); break;
             case "help": ShowHelp(); break;
+            case "manual": ManualScreen.Show(); break;
         }
     }
 
@@ -125,7 +126,6 @@ public static class CombatRunner {
         Enemy? target = null;
         int targetHpAfter = 0;
         bool wasDefend = false;
-        int armorGained = 0;
 
         lock (ctx.Lock) {
             if (ctx.Enemies.All(e => e.Hp <= 0)) {
@@ -140,39 +140,79 @@ public static class CombatRunner {
                 return;
             }
 
-            if (string.Equals(played.Name, "Defend", StringComparison.OrdinalIgnoreCase)) {
-                wasDefend = true;
-                armorGained = 6 + ctx.DefenseBonus;
-                ctx.Player.AddArmor(armorGained);
-                ctx.Player.Deck.Discard(played);
-            } else {
-
-                if (idx1Based < 1 || idx1Based > ctx.Enemies.Count) {
-                    Console.WriteLine($"Choose enemy 1-{ctx.Enemies.Count}");
-                    return;
-                }
-                target = ctx.Enemies[idx1Based - 1];
-                if (target.Hp <= 0) {
-                    Console.WriteLine("Already down!");
-                    return;
-                }
-
-                // effect
-                target.TakeDamage(played.Dmg);
-                targetHpAfter = target.Hp;
-
-                // discard after effect
-                ctx.Player.Deck.Discard(played);
-
-                // end if that was the last living enemy
-                if (target.Hp <= 0 && ctx.Enemies.All(e => e.Hp <= 0))
-                    ctx.SignalCombatEnd();
+            if (idx1Based < 1 || idx1Based > ctx.Enemies.Count) {
+                Console.WriteLine($"Choose enemy 1-{ctx.Enemies.Count}");
+                return;
             }
+            target = ctx.Enemies[idx1Based - 1];
+            if (target.Hp <= 0) {
+                Console.WriteLine("Already down!");
+                return;
+            }
+
+            int dmg = played.Dmg;
+
+            // Card specific effects
+            switch (played.Name) {
+                case "Strike":
+                case "Pommel":
+                case "Slice":
+                case "Smash":
+                    // plain damage
+                    break;
+
+                case "Bash":
+                    // apply Vulnerable +1 to the target
+                    ctx.ApplyVulnerable(target, 1);
+                    break;
+
+                case "Cleave":
+                    // splash logic later
+                    break;
+
+                case "Defend":
+                    ctx.AddArmorToPlayer(6 + ctx.DefenseBonus);
+                    dmg = 0;
+                    wasDefend = true;
+                    break;
+
+                case "Reinforce":
+                    ctx.AddArmorToPlayer(8 + ctx.DefenseBonus);
+                    dmg = 0;
+                    break;
+
+                case "Shock":
+                    ctx.ApplyWeak(target, 1);
+                    break;
+            }
+
+            // Apply damage (Vulnerable on enemy and Weak on player already handled by ctx and Enemy)
+            if (dmg > 0) {
+                target.TakeDamage(ctx.ModifyOutgoingPlayerDamage(dmg, target));
+            }
+
+            // Cleave logic: hit all other enemies for 4
+            if (played.Name == "Cleave") {
+                foreach (var enem in ctx.Enemies) {
+                    if (enem != target && enem.Hp > 0)
+                        enem.TakeDamage(ctx.ModifyOutgoingPlayerDamage(4, enem));
+                }
+            }
+
+            targetHpAfter = target.Hp;
+
+            // discard after effect
+            ctx.Player.Deck.Discard(played);
+
+            // end if that was the last living enemy
+            if (target.Hp <= 0 && ctx.Enemies.All(e => e.Hp <= 0))
+                ctx.SignalCombatEnd();
         }
+    
 
         // print outside lock to minimize time spent inside critical section
         if (wasDefend) {
-            Console.WriteLine($"You played Defend! +{armorGained} Armor (Armor: {ctx.Player.Armor})");
+            Console.WriteLine($"You played Defend!");
         } else {
             Console.WriteLine($"You played {played!.Name}! {target!.Name} HP: {targetHpAfter}");
         }

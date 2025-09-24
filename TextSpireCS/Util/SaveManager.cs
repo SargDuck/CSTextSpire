@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Item;
 using TextSpireCS.Persist;
 
@@ -33,6 +33,8 @@ public static class SaveManager {
         if (inventory is null) throw new ArgumentNullException(nameof(inventory));
         List<Card> deckSnapshot = deck.GetAllCards();
 
+        var existing = exists() ? read() : new SaveGame();
+
         var save = new SaveGame {
             floor = floor,
             strikeBonus = strikeBonus,
@@ -43,7 +45,9 @@ public static class SaveManager {
             slimeCount = slimeCount,
             deck = deckSnapshot,
             potions = inventory.GetPotions().ToList(),
-            weapons = inventory.GetWeapons().ToList()
+            weapons = inventory.GetWeapons().ToList(),
+            runs = existing.runs ?? new List<RunEntry>(),
+            relics = inventory.GetRelics().ToList()
         };
 
         var opts = new JsonSerializerOptions { WriteIndented = true };
@@ -51,6 +55,24 @@ public static class SaveManager {
 
         Directory.CreateDirectory(Path.GetDirectoryName(SavePath)!);
 
+        var tmp = SavePath + ".tmp";
+        File.WriteAllText(tmp, json);
+        if (File.Exists(SavePath))
+            File.Replace(tmp, SavePath, null);
+        else
+            File.Move(tmp, SavePath);
+    }
+
+    public static void AppendRun(RunEntry entry) {
+        if (entry == null) throw new ArgumentNullException(nameof(entry));
+        var sg = exists() ? read() : new SaveGame();
+        sg.runs ??= new List<RunEntry>();
+        sg.runs.Add(entry);
+
+        var opts = new JsonSerializerOptions { WriteIndented = true };
+        var json = JsonSerializer.Serialize(sg, opts);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(SavePath)!);
         var tmp = SavePath + ".tmp";
         File.WriteAllText(tmp, json);
         if (File.Exists(SavePath))

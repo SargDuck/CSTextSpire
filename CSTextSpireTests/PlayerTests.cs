@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Creature;
 
 namespace CSTextSpireTests {

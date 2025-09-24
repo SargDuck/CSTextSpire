@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TextSpireCS.Model.Card;
+namespace TextSpireCS.Model.Cards;
 
 // Models a Slay the Spire-style deck.
 // Draw pile and discard pile.

@@ -11,7 +11,10 @@ public static class RoomPicker {
 
     // Three random rooms with uniform randomness
     public static List<Room> ThreeRandomUniform() {
-        var types = Enum.GetValues<RoomType>();
+        var types = new[] {
+                RoomType.REST, RoomType.OFFENSE, RoomType.DEFENSE, RoomType.MONSTER,
+                RoomType.SHOP, RoomType.EVENT, RoomType.TREASURE, RoomType.MYSTERY
+            };
         var list = new List<Room>();
         for (int i = 0; i < 3; i++) {
             var t = types[_rng.Next(types.Length)];
@@ -29,10 +32,14 @@ public static class RoomPicker {
 
     // Three random rooms with a weighed distribution.
     private static readonly (RoomType Type, int Weight)[] Weighted = {
-    (RoomType.MONSTER, 60),
-    (RoomType.REST,    20),
+    (RoomType.MONSTER, 30),
+    (RoomType.REST,    10),
     (RoomType.OFFENSE, 10),
-    (RoomType.DEFENSE, 10)
+    (RoomType.DEFENSE, 10),
+    (RoomType.EVENT, 10),
+    (RoomType.SHOP, 10),
+    (RoomType.TREASURE, 10),
+    (RoomType.MYSTERY, 10)
 };
 
     public static Room PickWeighted() {

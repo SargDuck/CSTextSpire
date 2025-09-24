@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using Xunit;
 
 namespace TextSpireCS.Tests;

@@ -1,5 +1,5 @@
 using System;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 
 namespace TextSpireCS.Model.Creature;
 

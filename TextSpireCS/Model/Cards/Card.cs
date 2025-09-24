@@ -1,4 +1,4 @@
-namespace TextSpireCS.Model.Card;
+namespace TextSpireCS.Model.Cards;
 
 // Immutable card with a Name and a damag value.
 // Defensive cards are set to 0.

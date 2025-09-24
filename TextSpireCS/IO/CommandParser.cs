@@ -31,7 +31,7 @@ public static class CommandParser {
             return (cmd, n, true);
         }
         // Commands with no args are always ok.
-        if (cmd is "use" or "quit" or "status" or "help")
+        if (cmd is "use" or "quit" or "status" or "help" or "manual")
             return (cmd, 0, true);
 
         // Anything else is invalid

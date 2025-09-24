@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Item;
+using TextSpireCS.Model.Misc;
 
 namespace TextSpireCS.Persist;
 
@@ -17,4 +18,9 @@ public sealed class SaveGame {
     public List<Card> deck { get; set; } = new();
     public List<Potion> potions { get; set; } = new();
     public List<Weapon> weapons { get; set; } = new();
+    public int gold { get; set; } = 0;
+    public string heroClass { get; set; } = "Warrior";
+    public List<string> achievements { get; set; } = new();
+    public List<RunEntry>? runs { get; set; }
+    public List<Relic> relics { get; set; } = new();
 }

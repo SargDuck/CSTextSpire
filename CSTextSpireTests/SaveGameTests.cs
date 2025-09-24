@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using TextSpireCS.Model.Card;
+using TextSpireCS.Model.Cards;
 using TextSpireCS.Model.Item;
 using TextSpireCS.Persist;
 using Xunit;

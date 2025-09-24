@@ -54,16 +54,17 @@ public sealed class Enemy
             {
                 await timer.WaitForNextTickAsync(ctx.Token);
                 if (_dead || ctx.CombatEnded) break;
-                int hpAfter, armorAfter;
-                lock (ctx.Lock)
-                    {
-                        if (ctx.CombatEnded) return; // another thread ended the fight
-                    ctx.Player.TakeDamage(Damage);
+                int hpAfter;
+                lock (ctx.Lock) {
+                    if (ctx.CombatEnded) return; // another thread ended the fight
+                    int raw = Damage;
+                    raw = ctx.ModifyOutgoingEnemyDamage(this, raw); // apply Weak on enemy
+                    int actual = ctx.AbsorbDamageToPlayer(raw);     // armor first, then HP
+                    if (actual > 0) ctx.Player.TakeDamage(actual);
                     hpAfter = ctx.Player.Hp;
-                    armorAfter = ctx.Player.Armor;
                     if (ctx.Player.IsDead) ctx.SignalCombatEnd();
-                     }
-                Console.WriteLine($"{Name} hits you for {Damage}. (HP: {hpAfter}, Armor: {armorAfter})");
+                }
+                Console.WriteLine($"{Name} hits you for {Damage}. (HP: {hpAfter})");
             }
         }
         catch (OperationCanceledException) { }
