@@ -281,9 +281,10 @@ public class Program {
                 } else {
                     mut = 1;
                 }
-                    Economy.Wallet.Current?.Add(15 * mult * mut);
+                int gold = 15 * mult * mut;
+                    Economy.Wallet.Current?.Add(gold);
                 inventory.AddPotion(new Potion("Treasure Potion", 10));
-                Console.WriteLine("You found a chest: +15 gold and a potion!");
+                Console.WriteLine($"You found a chest: +{gold} gold and a potion!");
                 return false;
 
             case RoomType.MYSTERY:

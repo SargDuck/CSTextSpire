@@ -76,7 +76,7 @@ public sealed class CombatContext : IDisposable
         Console.WriteLine($"{e.Name} is vulnerable ({_vuln[e]})!");
     }
 
-    // Modifies player’s OUTGOING damage against enemy
+    // Modifies damage outgoing from the player to an enemy
     public int ModifyOutgoingPlayerDamage(int baseDmg, Enemy target) {
         lock (_lock) {
             int dmg = Math.Max(0, baseDmg);
@@ -86,7 +86,7 @@ public sealed class CombatContext : IDisposable
         }
     }
 
-    // Modifies ENEMY’S outgoing damage
+    // Modifies damage outgoing from an enemy to the player
     public int ModifyOutgoingEnemyDamage(Enemy e, int baseDmg) {
         lock (_lock) {
             int dmg = Math.Max(0, baseDmg);
