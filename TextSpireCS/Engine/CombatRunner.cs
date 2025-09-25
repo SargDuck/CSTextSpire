@@ -126,6 +126,7 @@ public static class CombatRunner {
         Enemy? target = null;
         int targetHpAfter = 0;
         bool wasDefend = false;
+        int armorGained = 0;
 
         lock (ctx.Lock) {
             if (ctx.Enemies.All(e => e.Hp <= 0)) {
@@ -171,14 +172,17 @@ public static class CombatRunner {
                     break;
 
                 case "Defend":
-                    ctx.AddArmorToPlayer(6 + ctx.DefenseBonus);
+                    armorGained = 6 + ctx.DefenseBonus;
+                    ctx.AddArmorToPlayer(armorGained);
                     dmg = 0;
                     wasDefend = true;
                     break;
 
                 case "Reinforce":
-                    ctx.AddArmorToPlayer(8 + ctx.DefenseBonus);
+                    armorGained = 8 + ctx.DefenseBonus;
+                    ctx.AddArmorToPlayer(armorGained);
                     dmg = 0;
+                    wasDefend = true;
                     break;
 
                 case "Shock":
@@ -208,14 +212,13 @@ public static class CombatRunner {
             if (target.Hp <= 0 && ctx.Enemies.All(e => e.Hp <= 0))
                 ctx.SignalCombatEnd();
         }
-    
+
 
         // print outside lock to minimize time spent inside critical section
-        if (wasDefend) {
-            Console.WriteLine($"You played Defend!");
-        } else {
+        if (wasDefend)
+            Console.WriteLine($"You played Defend! +{armorGained} Armor (Armor: {ctx.Player.Armor})");
+        else
             Console.WriteLine($"You played {played!.Name}! {target!.Name} HP: {targetHpAfter}");
-        }
     }
 
 
